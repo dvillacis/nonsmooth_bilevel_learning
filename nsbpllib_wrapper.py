@@ -29,10 +29,13 @@ def _to_array(x,lbl):
 def load_start_parameter(par,px=1,py=1):
     if '.npy' in str(par):
         x0 = np.load(par)
+        p = len(x0)//2
+        x0 = x0.reshape((p,p))
+        x0 = np.kron(x0,np.ones((p,p)))
+        print(f'x0:{x0}')
     else:
         x0 = float(par)
         x0 = x0 * np.ones(px*py)
-    x0 = x0*np.ones(px*py)
     return x0
     
 def build_settings(settings_dict):
