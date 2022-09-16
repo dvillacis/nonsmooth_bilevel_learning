@@ -1,0 +1,19 @@
+{
+    "description": "2 patch data learning",
+    "name": "20px_patch2",
+    "seed": 0,
+    "problem": {
+        "type": "2D_patch_data_learning",
+        "num_training_data": 3,
+        "npixels": 20,
+        "noise_level": 0.1,
+        "start_parameter": "raw_results/2D_scalar_data_learning/2D_scalar_data_learning_optimal_par.npy",
+        "px":2,
+        "py":2,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

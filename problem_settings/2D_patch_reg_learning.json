@@ -1,0 +1,19 @@
+{
+    "description": "2 patch reg learning",
+    "name": "20px_patch2",
+    "seed": 0,
+    "problem": {
+        "type": "2D_patch_reg_learning",
+        "num_training_data": 1,
+        "npixels": 32,
+        "noise_level": 0.1,
+        "start_parameter": 1e-2,
+        "px":8,
+        "py":8,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

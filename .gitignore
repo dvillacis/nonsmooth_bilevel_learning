@@ -1,0 +1,54 @@
+# OS generated files #
+.*.swp
+*.py[cod]
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/*
+static/*
+db.sqlite3
+
+# Build #
+build
+dist
+pylops.egg-info/
+.eggs/
+
+# setuptools_scm generated  #
+pylops/version.py
+
+# Development #
+.ipynb_checkpoints/
+notebooks
+TODO
+.vscode/
+
+# Documentation #
+docs/build
+docs/source/api/generated
+docs/source/gallery
+docs/source/tutorials
+
+# Pylint #
+pylint_plot.py
+pylintrc
+
+# Coverage reports
+COVERAGE
+.coverage
+coverage.xml
+htmlcov/
+
+# Airspeed velocity benchmarks
+ASV
+.asv/
+asv.conf.json
+benchmarks/
+
+raw_results/
+
+output_plot/

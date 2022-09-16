@@ -1,0 +1,18 @@
+{
+    "description": "2D scalar data learning",
+    "seed": 0,
+    "problem": {
+        "type": "2D_scalar_data_learning",
+        "num_training_data": 3,
+        "npixels": 20,
+        "noise_level": 0.1,
+        "start_parameter": 1.0,
+        "px": 1,
+        "py": 1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

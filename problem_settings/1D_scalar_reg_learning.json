@@ -1,0 +1,16 @@
+{
+    "description": "1D scalar regularization learning",
+    "seed": 0,
+    "problem": {
+        "type": "1D_scalar_reg_learning",
+        "num_training_data": 1,
+        "npixels": 128,
+        "noise_level": 0.1,
+        "start_parameter": 0.1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

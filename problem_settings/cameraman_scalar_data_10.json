@@ -1,0 +1,19 @@
+{
+    "description": "cameraman scalar data weight learning",
+    "name": "cameraman_10",
+    "seed": 1234,
+    "problem": {
+        "type": "ds_scalar_data_learning",
+        "dataset_dir": "datasets/cameraman",
+        "npixels": 128,
+        "noise_level": 0.1,
+        "start_parameter": 10.0,
+        "px": 1,
+        "py": 1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}
