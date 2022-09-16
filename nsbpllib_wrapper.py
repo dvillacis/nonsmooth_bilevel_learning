@@ -29,9 +29,10 @@ def _to_array(x,lbl):
 def load_start_parameter(par,px=1,py=1):
     if '.npy' in str(par):
         x0 = np.load(par)
-        p = len(x0)//2
+        p = int(np.sqrt(len(x0)))
+        m = px // p
         x0 = x0.reshape((p,p))
-        x0 = np.kron(x0,np.ones((p,p)))
+        x0 = np.kron(x0,np.ones((m,m)))
         print(f'x0:{x0}')
     else:
         x0 = float(par)

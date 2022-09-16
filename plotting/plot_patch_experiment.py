@@ -1,3 +1,6 @@
+import cmath
+import enum
+from re import S
 import sys,os,json
 import numpy as np
 import pandas as pd
@@ -11,6 +14,7 @@ import pandas as pd
 #     'pgf.rcfonts': False,
 # })
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
 
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
@@ -100,49 +104,107 @@ def generate_recons_quality_stats(true_imgs,noisy_imgs,recons):
     return q_df,q_df_noisy
 
 def main():
-    if len(sys.argv) != 3:
-        print("Usage: python %s settings_file outfolder" % sys.argv[0])
+    if len(sys.argv) < 3:
+        print("Usage: python %s settings_files outfolder" % sys.argv[0])
         print("where")
-        print("    settings_file = json file containing run details")
+        print("    settings_files = json file containing run details")
         print("    outfolder = folder to save plots to")
         exit()
     
     # Specific settings
-    settings_file = sys.argv[1]
-    if not os.path.isfile(settings_file):
-        raise RuntimeError('Settings file does not exist: %s' % settings_file)
-    settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
-    results_folder = os.path.join('raw_results',settings_file_basename)
-    if not os.path.isdir(results_folder):
-        raise RuntimeError('Results folder does not exist: %s' % results_folder)
-    outfolder = os.path.join(sys.argv[2], settings_file_basename)
-    settings_dict = read_json(settings_file)
+    num_setting_files = len(sys.argv)-2
+    settings_files = [sys.argv[i] for i in range(1,1+num_setting_files)]
+    print(settings_files)
+    results_folders = {}
+    for settings_file in settings_files:
+        if not os.path.isfile(settings_file):
+            raise RuntimeError('Settings file does not exist: %s' % settings_file)
+        settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+        results_folder = os.path.join('raw_results',settings_file_basename)
+        if not os.path.isdir(results_folder):
+            raise RuntimeError('Results folder does not exist: %s' % results_folder)
+        settings_dict = read_json(settings_file)
+        results_folders[settings_file_basename]={'results_folder':results_folder,'px':settings_dict['problem']['px'],'py':settings_dict['problem']['py']}
+        
+    outfolder = os.path.join(sys.argv[-1], settings_file_basename)
+    # settings_dict = read_json(settings_file)
     if not os.path.isdir(outfolder):
         os.makedirs(outfolder, exist_ok=True)
         
     # Load patch size
-    px = int(settings_dict['problem']['px'])
-    py = int(settings_dict['problem']['py'])
+    # px = int(settings_dict['problem']['px'])
+    # py = int(settings_dict['problem']['py'])
         
     # Load optimal parameter
-    opt_param = np.load(os.path.join(results_folder,'%s_optimal_par.npy' % (settings_file_basename)))
+    opt_params = {}
+    for settings_file in settings_files:
+        settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+        opt_param = np.load(os.path.join(results_folders[settings_file_basename]['results_folder'],'%s_optimal_par.npy' % (settings_file_basename)))
+        recons = np.load(os.path.join(results_folders[settings_file_basename]['results_folder'],'%s_recons.npy' % (settings_file_basename)))
+        trues = np.load(os.path.join(results_folders[settings_file_basename]['results_folder'],'%s_true_imgs.npy' % (settings_file_basename)))
+        opt_params[settings_file_basename] = {'param':opt_param,'recons':recons,'trues':trues}
     
-    # Load images
-    q_recons_fig_outfile = os.path.join(outfolder,'recons_fig.pgf')
-    true_imgs = np.load(os.path.join(results_folder,'%s_true_imgs.npy' % (settings_file_basename)))
-    noisy_imgs = np.load(os.path.join(results_folder,'%s_noisy_imgs.npy' % (settings_file_basename)))
-    recons = np.load(os.path.join(results_folder,'%s_recons.npy' % (settings_file_basename)))
-    fig = plot_recons(opt_param,true_imgs,noisy_imgs,recons,px,py)
-    plt.savefig(q_recons_fig_outfile)
-    
-    # Generate quality tables
-    q_recons_outfile = os.path.join(outfolder,'q_recons.tex')
-    q_noisy_outfile = os.path.join(outfolder,'q_noisy.tex')
-    q_stats = generate_recons_quality_stats(true_imgs,noisy_imgs,recons)
-    with open(q_recons_outfile,'w') as f:
-        print(q_stats[0].style.to_latex(),file=f)
-    with open(q_noisy_outfile,'w') as f:
-        print(q_stats[1].style.to_latex(),file=f)
+    # Generate plot
+    # fig, axs = plt.subplots(2, num_setting_files)
+    # for i,settings_file in enumerate(settings_files):
+    #     settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+    #     px = results_folders[settings_file_basename]['px']
+    #     py = results_folders[settings_file_basename]['py']
+    #     axs[0,i].imshow(opt_params[settings_file_basename]['recons'], cmap='gray', vmin=0, vmax=1)
+    #     axs[0,i].axis('off')
+    #     axs[0,i].set_title(f'{px}x{py}')
+    # for i,settings_file in enumerate(settings_files):
+    #     settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+    #     px = results_folders[settings_file_basename]['px']
+    #     py = results_folders[settings_file_basename]['py']
+    #     param = opt_params[settings_file_basename]['param'].reshape((px,py))
+    #     pcm = axs[1][i].imshow(param, cmap='gray')
+    #     axs[1,i].axis('off')
+    #     fig.colorbar(pcm,ax=axs[1][i],orientation='horizontal',shrink=0.6)
+    # plt.show()
+    fig = plt.figure()
+    grid = ImageGrid(
+        fig,
+        211,
+        share_all=True,
+        axes_pad=0.1,
+        nrows_ncols=(1,num_setting_files),
+        label_mode='all'
+    )
+    for i,(ax,settings_file) in enumerate(zip(grid,settings_files)):
+        settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+        px = results_folders[settings_file_basename]['px']
+        py = results_folders[settings_file_basename]['py']
+        rec = opt_params[settings_file_basename]['recons'][:,:,0]
+        im = ax.imshow(rec, cmap='gray')
+        ax.set_title(f'{px}x{py}')
+        ax.set_xlabel('SSIM=')
+        ax.axis('off')
+
+    grid2 = ImageGrid(
+        fig,
+        212,
+        axes_pad=0.1,
+        share_all=True,
+        nrows_ncols=(1,num_setting_files),
+        cbar_location="bottom",
+        cbar_mode="each",
+        cbar_pad=0.05,
+        cbar_size="5%"
+    )
+    for i,(ax,settings_file) in enumerate(zip(grid2,settings_files)):
+        settings_file_basename = settings_file.split(os.path.sep)[-1].replace('.json', '')
+        px = results_folders[settings_file_basename]['px']
+        py = results_folders[settings_file_basename]['py']
+        nx,ny = opt_params[settings_file_basename]['trues'][:,:,0].shape
+        param = opt_params[settings_file_basename]['param'].reshape((px,py))
+        m = nx // px
+        param = np.kron(param,np.ones((m,m)))
+        im = ax.imshow(param, cmap='gray')
+        ax.cax.colorbar(im)
+        ax.axis('off')
+
+    plt.show()
     
     
         

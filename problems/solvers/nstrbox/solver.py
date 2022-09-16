@@ -77,12 +77,12 @@ def solve(
     x0,
     verbose=False,
     initial_radius=1.0,
-    threshold_radius=0.1,
+    threshold_radius=1e-4,
     max_radius=100,
     max_nfev=2000,
-    xtol=1e-7,
-    ftol=1e-7,
-    radius_tol=1e-2
+    xtol=1e-9,
+    ftol=1e-9,
+    radius_tol=1e-4
     ):
     ### Evolution records
     nfevs = []
@@ -124,6 +124,7 @@ def solve(
     while True:
         sl = -x - 1e-9
         su = 1e9 - x
+        sl = np.where(sl < 0, sl, -sl)
         s = trustregion.solve(g,B.get_matrix(),radius,sl=sl,su=su)
         s_norm = np.linalg.norm(s)
         x_ = x + s
