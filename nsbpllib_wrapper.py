@@ -36,7 +36,7 @@ def load_start_parameter(par,px=1,py=1):
     else:
         x0 = float(par)
         x0 = x0 * np.ones(px*py)
-    return x0
+    return x0.ravel()
     
 def build_settings(settings_dict):
     problem_type = str(settings_dict['problem']['type'])

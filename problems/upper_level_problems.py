@@ -32,7 +32,7 @@ class UpperLevelProblem(object):
             self.lower_level_problems[i](param)
             resid[i] = self.lower_level_problems[i].loss(self.true_imgs[i])
             if smooth:
-                grads[i] = self.lower_level_problems[i].smooth_grad(self.true_imgs[i],param)
+                grads[i,:] = self.lower_level_problems[i].smooth_grad(self.true_imgs[i],param)
             else:
                 grads[i,:] = self.lower_level_problems[i].grad(self.true_imgs[i],param)
         return resid,grads
