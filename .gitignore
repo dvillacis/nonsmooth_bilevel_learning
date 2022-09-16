@@ -49,6 +49,6 @@ ASV
 asv.conf.json
 benchmarks/
 
-raw_results/
+raw_results/2D*
 
 output_plot/
