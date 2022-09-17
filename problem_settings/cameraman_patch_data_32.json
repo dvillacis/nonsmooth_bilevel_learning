@@ -6,9 +6,9 @@
         "type": "ds_patch_data_learning",
         "dataset_dir": "datasets/cameraman",
         "npixels": 128,
-        "start_parameter": 64,
-        "px": 4,
-        "py": 4,
+        "start_parameter":64,
+        "px": 32,
+        "py": 32,
         "verbose": true
     },
     "nstr": {
