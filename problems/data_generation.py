@@ -26,16 +26,18 @@ def load_training_data(ds_dir):
     
     true_imgs = []
     true_imgs_path = [f for f in listdir(true_imgs_dir) if isfile(join(true_imgs_dir, f))]
-    for img_path in true_imgs_path:
-        img = np.array(Image.open(join(true_imgs_dir,img_path)).convert('L'))
-        img = img / np.amax(img)
-        true_imgs.append(img)
+    for img_path in sorted(true_imgs_path):
+        if '.png' in img_path:
+            img = np.array(Image.open(join(true_imgs_dir,img_path)).convert('L'))
+            img = img / np.amax(img)
+            true_imgs.append(img)
         
     noisy_imgs = []
     noisy_imgs_path = [f for f in listdir(noisy_imgs_dir) if isfile(join(noisy_imgs_dir, f))]
-    for img_path in noisy_imgs_path:
-        img = np.array(Image.open(join(noisy_imgs_dir,img_path)).convert('L'))
-        img = img / np.amax(img)
-        noisy_imgs.append(img)
+    for img_path in sorted(noisy_imgs_path):
+        if '.png' in img_path:
+            img = np.array(Image.open(join(noisy_imgs_dir,img_path)).convert('L'))
+            img = img / np.amax(img)
+            noisy_imgs.append(img)
     return len(true_imgs), true_imgs, noisy_imgs
     

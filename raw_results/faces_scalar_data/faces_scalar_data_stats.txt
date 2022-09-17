@@ -1,0 +1,9 @@
+        fun: 1134.7196840958675
+        jac: array([-0.00130307])
+  n_reg_jev: 0
+       nfev: 13
+        nit: 11
+       njev: 13
+ optimality: 0.0013030707602937597
+     status: 3
+          x: array([0.49997957])
