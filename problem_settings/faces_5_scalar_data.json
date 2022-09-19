@@ -1,10 +1,10 @@
 {
-    "description": "faces scalar data weight learning",
-    "name": "faces_10",
+    "description": "cameraman scalar data weight learning",
+    "name": "cameraman_10",
     "seed": 1234,
     "problem": {
         "type": "ds_scalar_data_learning",
-        "dataset_dir": "datasets/faces",
+        "dataset_dir": "datasets/faces_5",
         "npixels": 128,
         "start_parameter": 10.0,
         "px": 1,
