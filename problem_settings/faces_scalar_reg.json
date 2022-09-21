@@ -1,0 +1,18 @@
+{
+    "description": "faces scalar reg weight learning",
+    "name": "faces_10",
+    "seed": 0,
+    "problem": {
+        "type": "ds_scalar_reg_learning",
+        "dataset_dir": "datasets/faces",
+        "npixels": 128,
+        "start_parameter": 1e-5,
+        "px": 1,
+        "py": 1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

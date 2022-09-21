@@ -11,7 +11,7 @@ import json
 import os, sys
 
 from problems.solvers.nstrbox.solver import solve as nstrbox_solve
-from problems.upper_level_problems import UpperScalarDataLearning_2D, UpperPatchDataLearning_2D, UpperPatchRegLearning_2D, UpperScalarDataLearning, UpperPatchDataLearning
+from problems.upper_level_problems import UpperScalarDataLearning_2D, UpperPatchDataLearning_2D, UpperPatchRegLearning_2D, UpperScalarDataLearning, UpperPatchDataLearning, UpperScalarRegLearning, UpperPatchRegLearning
 
 def read_json(infile):
     with open(infile, 'r') as ifile:
@@ -49,8 +49,14 @@ def build_settings(settings_dict):
         return build_settings_2d_patch_reg_learning(settings_dict)
     elif problem_type == 'ds_scalar_data_learning':
         return build_settings_ds_scalar_data_learning(settings_dict)
+    elif problem_type == 'ds_scalar_reg_learning':
+        return build_settings_ds_scalar_reg_learning(settings_dict)
     elif problem_type == 'ds_patch_data_learning':
         return build_settings_ds_patch_data_learning(settings_dict)
+    elif problem_type == 'ds_patch_reg_learning':
+        return build_settings_ds_patch_reg_learning(settings_dict)
+    elif problem_type == 'kodak_scalar_reg_learning':
+        return build_settings_kodak_scalar_reg_learning(settings_dict)
     else:
         raise RuntimeError('Unknown problem type: %s' % problem_type)
     
@@ -103,6 +109,19 @@ def build_settings_ds_scalar_data_learning(settings_dict):
     # x0 = _to_array(float(settings_dict['problem']['start_parameter']),'x0')
     return upper_level_problem,x0
 
+def build_settings_ds_scalar_reg_learning(settings_dict):
+    ds_dir = settings_dict['problem']['dataset_dir']
+    # noise_level = float(settings_dict['problem']['noise_level'])
+    verbose = bool(settings_dict['problem']['verbose'])
+    px = int(settings_dict['problem']['px'])
+    py = int(settings_dict['problem']['py'])
+    upper_level_problem = UpperScalarRegLearning(
+        ds_dir,
+        seed=int(settings_dict['seed']),
+        verbose=verbose)
+    x0 = load_start_parameter(settings_dict['problem']['start_parameter'])
+    return upper_level_problem,x0
+
 def build_settings_ds_patch_data_learning(settings_dict):
     ds_dir = settings_dict['problem']['dataset_dir']
     # noise_level = float(settings_dict['problem']['noise_level'])
@@ -118,6 +137,36 @@ def build_settings_ds_patch_data_learning(settings_dict):
         verbose=verbose)
     x0 = load_start_parameter(settings_dict['problem']['start_parameter'],px,py)
     # x0 = _to_array(float(settings_dict['problem']['start_parameter']),'x0')
+    return upper_level_problem,x0
+
+def build_settings_ds_patch_reg_learning(settings_dict):
+    ds_dir = settings_dict['problem']['dataset_dir']
+    # noise_level = float(settings_dict['problem']['noise_level'])
+    verbose = bool(settings_dict['problem']['verbose'])
+    px = int(settings_dict['problem']['px'])
+    py = int(settings_dict['problem']['py'])
+    upper_level_problem = UpperPatchRegLearning(
+        ds_dir,
+        seed=int(settings_dict['seed']),
+        # noise_level=noise_level,
+        px=px,
+        py=py,
+        verbose=verbose)
+    x0 = load_start_parameter(settings_dict['problem']['start_parameter'],px,py)
+    # x0 = _to_array(float(settings_dict['problem']['start_parameter']),'x0')
+    return upper_level_problem,x0
+
+def build_settings_kodak_scalar_reg_learning(settings_dict):
+    ds_dir = settings_dict['problem']['dataset_dir']
+    noise_level = float(settings_dict['problem']['noise_level'])
+    verbose = bool(settings_dict['problem']['verbose'])
+    upper_level_problem = UpperScalarRegLearning_Kodak(
+        ds_dir,
+        seed=int(settings_dict['seed']),
+        noise_level=noise_level,
+        verbose=verbose
+    )
+    x0 = load_start_parameter(settings_dict['problem']['start_parameter']) 
     return upper_level_problem,x0
 
 def build_settings_2d_patch_reg_learning(settings_dict):

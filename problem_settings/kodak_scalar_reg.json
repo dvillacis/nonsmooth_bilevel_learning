@@ -1,0 +1,20 @@
+{
+    "description": "kodak scalar reg weight learning",
+    "name": "kodak_10",
+    "seed": 0,
+    "problem": {
+        "type": "kodak_scalar_reg_learning",
+        "num_training_data": 128,
+        "new_height": 256,
+        "new_width": 256,
+        "noise_level": 0.1,
+        "start_parameter": 0.0,
+        "px": 1,
+        "py": 1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "description": "cameraman scalar reg weight learning",
+    "name": "cameraman_10",
+    "seed": 1234,
+    "problem": {
+        "type": "ds_scalar_reg_learning",
+        "dataset_dir": "datasets/circles",
+        "npixels": 128,
+        "start_parameter": 1e-5,
+        "px": 1,
+        "py": 1,
+        "verbose": true
+    },
+    "nstr": {
+        "maxiter": 200,
+        "tol": 1e-6
+    }
+}

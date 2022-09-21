@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import multiprocessing
-from .data_generation import get_2D_phantom, load_training_data
+from .data_generation import get_2D_phantom, get_kodak_image, load_training_data
 from .lower_level_problems import get_lower_level_problem
 
 
@@ -127,17 +127,83 @@ class UpperPatchDataLearning(UpperLevelProblem):
         lower_level_problems = []
         
         # Fix random seed
-        np.random.seed(seed)
+        # np.random.seed(seed)
         
         for i in range(num_training_data):
-            true_img = true_imgs[i]
+            # true_img = true_imgs[i]
             # noise = np.sqrt(noise_level) * np.random.randn(*true_img.shape)
             # noisy_img = true_img + noise
             noisy_img = noisy_imgs[i]
             llproblem = get_lower_level_problem(problem_type, noisy_img, "Img %g" % i,px,py)
             lower_level_problems.append(llproblem)
             
-        print(f'Starting optimal parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}\npatch_size:{px}x{py}')
+        print(f'Starting optimal data parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}\npatch_size:{px}x{py}')
+        
+        super().__init__(lower_level_problems, true_imgs)
+        
+class UpperScalarRegLearning(UpperLevelProblem):
+    def __init__(self, ds_dir, seed = 0, verbose = False):
+
+        # Define the problem type
+        problem_type='2D_scalar_reg_learning'
+        
+        # Build Training Data
+        num_training_data, true_imgs, noisy_imgs = load_training_data(ds_dir)
+        lower_level_problems = []
+        
+        for i in range(num_training_data):
+            # true_img = true_imgs[i]
+            noisy_img = noisy_imgs[i]
+            # noisy_img = true_img + noise_level * np.random.randn(*true_img.shape)
+            llproblem = get_lower_level_problem(problem_type, noisy_img, "Img %g" % i,1,1)
+            lower_level_problems.append(llproblem)
+            
+        print(f'Starting optimal regularization parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}')
+        
+        super().__init__(lower_level_problems, true_imgs)
+        
+class UpperPatchRegLearning(UpperLevelProblem):
+    def __init__(self, ds_dir, px, py, seed = 0, verbose = False):
+
+        # Define the problem type
+        problem_type='2D_patch_reg_learning'
+        
+        # Build Training Data
+        num_training_data, true_imgs, noisy_imgs = load_training_data(ds_dir)
+        lower_level_problems = []
+        
+        # Fix random seed
+        # np.random.seed(seed)
+        
+        for i in range(num_training_data):
+            noisy_img = noisy_imgs[i]
+            llproblem = get_lower_level_problem(problem_type, noisy_img, "Img %g" % i,px,py)
+            lower_level_problems.append(llproblem)
+            
+        print(f'Starting optimal reg parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}\npatch_size:{px}x{py}')
+        
+        super().__init__(lower_level_problems, true_imgs)
+        
+class UpperScalarRegLearning_Kodak(UpperLevelProblem):
+    def __init__(self, ds_dir, num_training_data=10, seed = 0, noise_level = 0, verbose = False):
+
+        # Define the problem type
+        problem_type='2D_scalar_reg_learning'
+        
+        # Build Training Data
+        true_imgs = []
+        lower_level_problems = []
+        
+        # Fix random seed
+        # np.random.seed(seed)
+        
+        for i in range(num_training_data):
+            true_img = get_kodak_image(i,ds_dir)
+            noisy_img = true_img + noise_level * np.random.randn(*true_img.shape)
+            llproblem = get_lower_level_problem(problem_type, noisy_img, "Img %g" % i,1,1)
+            lower_level_problems.append(llproblem)
+            
+        print(f'Starting optimal reg parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}')
         
         super().__init__(lower_level_problems, true_imgs)
         
@@ -161,6 +227,8 @@ class UpperPatchDataLearning_2D(UpperLevelProblem):
             lower_level_problems.append(llproblem)
         
         super().__init__(lower_level_problems, true_imgs)
+        
+
         
 class UpperPatchRegLearning_2D(UpperLevelProblem):
     def __init__(self, num_training_data, px, py, seed = 0, noise_level=0.1, npixels=20, verbose = False):

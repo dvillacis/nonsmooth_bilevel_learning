@@ -29,6 +29,8 @@ def tv_smooth_subdiff(u,gamma=1000):
 def get_lower_level_problem(problem_type,data,label,px,py):
     if problem_type == '2D_scalar_data_learning':
         return LowerScalarDataLearning_2D(data,label)
+    if problem_type == '2D_scalar_reg_learning':
+        return LowerScalarRegLearning_2D(data,label)
     elif problem_type == '2D_patch_data_learning':
         return LowerPatchDataLearning_2D(data,label,px,py)
     elif problem_type == '2D_patch_reg_learning':
@@ -186,7 +188,7 @@ class LowerPatchRegLearning_2D(LowerLevelProblem):
         reg_par = Patch(param,self.px,self.py)
         data_par = Patch(np.ones(self.px*self.py),self.px,self.py)
         self.recon = self.solver.solve(data_par=data_par,reg_par=reg_par)
-        print(f'rec:{self.recon}\npar:{param}')
+        #print(f'rec:{self.recon}\npar:{param}')
     
     def loss(self, true_data):
         return np.linalg.norm(self.recon-true_data)**2
@@ -200,12 +202,12 @@ class LowerPatchRegLearning_2D(LowerLevelProblem):
         T = TOp(self.Kx,self.Ky,self.recon)
         Act = ActiveOp(self.K,self.recon)
         Inact = InactiveOp(self.K,self.recon)
-        print(f'In:{(-T).todense()}')
+        # print(f'In:{(-T).todense()}')
         A = Block([[Id,self.K.adjoint()],[-Inact*L*T,Inact+1e-12*Act]])
         b = np.concatenate((self.recon.ravel()-true_data.ravel(),np.zeros(m)))
         # p = spla.spsolve(A.tosparse(),b)[:n]
-        print(A.todense())
-        print(np.linalg.cond(A.todense()))
+        # print(A.todense())
+        # print(np.linalg.cond(A.todense()))
         p,exitcode,itn,normr,normar,norma,conda,normx = spla.lsmr(A.tosparse(),b)
         print(exitcode)
         if exitcode == 7:
@@ -221,7 +223,86 @@ class LowerPatchRegLearning_2D(LowerLevelProblem):
         g = g.reshape((true_data.shape[0]-1,true_data.shape[1]-1))
         g = np.pad(g,[(0,1),(0,1)],mode='edge')
         g = reg_par.reduce_from_img(g.reshape(true_data.shape))
-        print(p,g)
+        # print(p,g)
+        return g
+    
+    def smooth_grad(self, true_data, param):
+        reg_par = Patch(param,self.px,self.py)
+        parameter = reg_par.map_to_img(true_data[:-1,:-1])
+        m,n = self.K.shape
+        L = Diagonal(np.concatenate((parameter,parameter)))
+        T = Tgamma(self.Kx,self.Ky,self.recon)
+        Id = Identity(m)
+        Id2 = Identity(n)
+        # print(L.shape,self.K.adjoint().shape,T.shape,Id.shape)
+        A = Block([[Id2,self.K.adjoint()],[-L*T,Id]])
+        b = np.concatenate((self.recon.ravel()-true_data.ravel(),np.zeros(m)))
+        p,exitcode = spla.qmr(A.tosparse(),b)
+        if exitcode > 0:
+            print("Warning: bad conditioned matrix using param: %s " % param)
+        p = p[:n]
+        Kxp = self.Kx*p
+        Kyp = self.Ky*p
+        hx,hy = tv_smooth_subdiff(self.recon,gamma=1000)
+        grad = -(hx*Kxp + hy*Kyp)
+        grad = grad.reshape((true_data.shape[0]-1,true_data.shape[1]-1))
+        grad = np.pad(grad,[(0,1),(0,1)],mode='edge')
+        grad = reg_par.reduce_from_img(grad)
+        return grad
+    
+class LowerScalarRegLearning_2D(LowerLevelProblem):
+    def __init__(self, data, label):
+        self.Kx = FirstDerivative(np.prod(data.shape), dims=data.shape,kind='forward',dir=0)
+        self.Ky = FirstDerivative(np.prod(data.shape), dims=data.shape,kind='forward',dir=1)
+        self.K = Gradient(dims=(data.shape))
+        self.px = 1
+        self.py = 1
+        self.solver = ROFSolver_2D(data,self.K)
+        super().__init__(data, label)
+    
+    def __call__(self, param):
+        """
+        Get a new reconstruction from the noisy data
+        """
+        logging.debug(f'Solving lower level problem for {self.label}')
+        reg_par = Patch(param,self.px,self.py)
+        data_par = Patch(np.ones(self.px*self.py),self.px,self.py)
+        self.recon = self.solver.solve(data_par=data_par,reg_par=reg_par)
+        # print(f'rec:{self.recon}\npar:{param}')
+    
+    def loss(self, true_data):
+        return np.linalg.norm(self.recon-true_data)**2
+    
+    def grad(self, true_data, param):
+        reg_par = Patch(param,self.px,self.py)
+        parameter = reg_par.map_to_img(true_data[:-1,:-1])
+        m,n = self.K.shape
+        Id = Identity(n)
+        L = Diagonal(np.concatenate((parameter,parameter)))
+        T = TOp(self.Kx,self.Ky,self.recon)
+        Act = ActiveOp(self.K,self.recon)
+        Inact = InactiveOp(self.K,self.recon)
+        # print(f'In:{(-T).todense()}')
+        A = Block([[Id,self.K.adjoint()],[-Inact*L*T,Inact+1e-12*Act]])
+        b = np.concatenate((self.recon.ravel()-true_data.ravel(),np.zeros(m)))
+        # p = spla.spsolve(A.tosparse(),b)[:n]
+        # print(A.todense())
+        # print(np.linalg.cond(A.todense()))
+        p,exitcode,itn,normr,normar,norma,conda,normx = spla.lsmr(A.tosparse(),b)
+        print(exitcode)
+        if exitcode == 7:
+            print("Warning: bad conditioned matrix using param: %s " % param)
+        p = p[:n]
+        Kxu = self.Kx*self.recon.ravel()
+        Kyu = self.Ky*self.recon.ravel()
+        Kxp = self.Kx*p
+        Kyp = self.Ky*p
+        nKu = np.linalg.norm(np.vstack((Kxu,Kyu)).T,axis=1)
+        mul = np.where(nKu<1e-12,0,-1/nKu)
+        g = mul * (Kxu * Kxp + Kyu * Kyp)
+        g = g.reshape((true_data.shape[0]-1,true_data.shape[1]-1))
+        g = np.pad(g,[(0,1),(0,1)],mode='edge')
+        g = reg_par.reduce_from_img(g.reshape(true_data.shape))
         return g
     
     def smooth_grad(self, true_data, param):

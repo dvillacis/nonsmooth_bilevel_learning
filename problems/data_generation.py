@@ -2,8 +2,10 @@
 from argparse import ArgumentError
 import numpy as np
 
-from os import listdir
+from os import listdir, pardir
 from os.path import isfile, join, isdir
+
+import imageio
 
 from PIL import Image
 
@@ -40,4 +42,16 @@ def load_training_data(ds_dir):
             img = img / np.amax(img)
             noisy_imgs.append(img)
     return len(true_imgs), true_imgs, noisy_imgs
+
+def get_kodak_image(img_num, ds_dir, new_height=256, new_width=256):
+    infile = join(ds_dir, 'kodim%02d.png' % img_num)
+    if isfile(infile):
+        img = imageio.imread(infile)
+    else:
+        raise AttributeError(f'Image not found in {infile}')
+    img = 0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] + 0.114 * img[:, :, 2]  # to black & white
+    height, width = img.shape
+    img = img[height // 2 - new_height // 2:height // 2 + new_height // 2,
+              width // 2 - new_width // 2:width // 2 + new_width // 2]
+    return img / 255  # normalise
     
