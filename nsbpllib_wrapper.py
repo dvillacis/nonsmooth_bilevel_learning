@@ -11,7 +11,7 @@ import json
 import os, sys
 
 from problems.solvers.nstrbox.solver import solve as nstrbox_solve
-from problems.upper_level_problems import UpperScalarDataLearning_2D, UpperPatchDataLearning_2D, UpperPatchRegLearning_2D, UpperScalarDataLearning, UpperPatchDataLearning, UpperScalarRegLearning, UpperPatchRegLearning
+from problems.upper_level_problems import UpperScalarDataLearning_2D, UpperPatchDataLearning_2D, UpperPatchRegLearning_2D, UpperScalarDataLearning, UpperPatchDataLearning, UpperScalarRegLearning, UpperPatchRegLearning, UpperScalarRegLearning_Kodak
 
 def read_json(infile):
     with open(infile, 'r') as ifile:
@@ -160,8 +160,10 @@ def build_settings_kodak_scalar_reg_learning(settings_dict):
     ds_dir = settings_dict['problem']['dataset_dir']
     noise_level = float(settings_dict['problem']['noise_level'])
     verbose = bool(settings_dict['problem']['verbose'])
+    num_training_data = int(settings_dict['problem']['num_training_data'])
     upper_level_problem = UpperScalarRegLearning_Kodak(
         ds_dir,
+        num_training_data=num_training_data,
         seed=int(settings_dict['seed']),
         noise_level=noise_level,
         verbose=verbose

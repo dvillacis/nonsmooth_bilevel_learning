@@ -4,11 +4,12 @@
     "seed": 0,
     "problem": {
         "type": "kodak_scalar_reg_learning",
-        "num_training_data": 128,
+        "dataset_dir": "datasets/kodak_dataset",
+        "num_training_data":25,
         "new_height": 256,
         "new_width": 256,
         "noise_level": 0.1,
-        "start_parameter": 0.0,
+        "start_parameter": 1e-5,
         "px": 1,
         "py": 1,
         "verbose": true

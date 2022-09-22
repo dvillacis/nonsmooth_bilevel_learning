@@ -303,6 +303,7 @@ class LowerScalarRegLearning_2D(LowerLevelProblem):
         g = g.reshape((true_data.shape[0]-1,true_data.shape[1]-1))
         g = np.pad(g,[(0,1),(0,1)],mode='edge')
         g = reg_par.reduce_from_img(g.reshape(true_data.shape))
+        # print(f'g:{g}')
         return g
     
     def smooth_grad(self, true_data, param):
@@ -327,4 +328,5 @@ class LowerScalarRegLearning_2D(LowerLevelProblem):
         grad = grad.reshape((true_data.shape[0]-1,true_data.shape[1]-1))
         grad = np.pad(grad,[(0,1),(0,1)],mode='edge')
         grad = reg_par.reduce_from_img(grad)
+        # print(f'g_smooth:{grad}')
         return grad

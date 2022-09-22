@@ -195,12 +195,14 @@ class UpperScalarRegLearning_Kodak(UpperLevelProblem):
         lower_level_problems = []
         
         # Fix random seed
-        # np.random.seed(seed)
+        np.random.seed(seed)
         
-        for i in range(num_training_data):
+        for i in range(1,num_training_data+1):
             true_img = get_kodak_image(i,ds_dir)
+            # print(f'Img {i}:{true_img.shape}')
             noisy_img = true_img + noise_level * np.random.randn(*true_img.shape)
             llproblem = get_lower_level_problem(problem_type, noisy_img, "Img %g" % i,1,1)
+            true_imgs.append(true_img)
             lower_level_problems.append(llproblem)
             
         print(f'Starting optimal reg parameter learning with\ntraining set:{ds_dir}\nproblem_type:{problem_type}\nnum_training_data:{num_training_data}')
