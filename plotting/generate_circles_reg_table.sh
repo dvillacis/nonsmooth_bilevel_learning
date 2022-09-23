@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+python plotting/table_generation.py problem_settings/circles_scalar_reg.json problem_settings/circles_patch_reg_2.json problem_settings/circles_patch_reg_4.json problem_settings/circles_patch_reg_8.json problem_settings/circles_patch_reg_16.json problem_settings/circles_patch_reg_32.json circles_reg
