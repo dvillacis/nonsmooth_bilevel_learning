@@ -1,0 +1,185 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+
+\begin{groupplot}[group style={group size=6 by 2}]
+\nextgroupplot[
+tick pos=left,
+xlabel={PSNR=16.3239
+SSIM=0.7671},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-000.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-001.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-002.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-003.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-004.png};
+
+\nextgroupplot[
+tick pos=left,
+title={2x2},
+xlabel={PSNR=20.5213
+SSIM=0.8218},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-005.png};
+
+\nextgroupplot[
+tick pos=left,
+title={4x4},
+xlabel={PSNR=20.6050
+SSIM=0.8496},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-006.png};
+
+\nextgroupplot[
+tick pos=left,
+title={8x8},
+xlabel={PSNR=20.8678
+SSIM=0.8653},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-007.png};
+
+\nextgroupplot[
+tick pos=left,
+title={16x16},
+xlabel={PSNR=22.1871
+SSIM=0.8816},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-008.png};
+
+\nextgroupplot[
+tick pos=left,
+title={32x32},
+xlabel={PSNR=23.1955
+SSIM=0.8863},
+xmin=-0.5, xmax=127.5,
+y dir=reverse,
+ymin=-0.5, ymax=127.5
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=127.5, ymax=-0.5] {patch_comparison_plot-009.png};
+
+\nextgroupplot[
+hide x axis,
+hide y axis,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=0, xmax=1,
+xtick style={color=black},
+y grid style={darkgray176},
+ymin=0, ymax=1,
+ytick style={color=black}
+]
+
+\nextgroupplot[
+colorbar horizontal,
+colormap/viridis,
+hide x axis,
+hide y axis,
+point meta max=0.243019740476947,
+point meta min=0.0558263008723669,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=-0.5, xmax=1.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={darkgray176},
+ymin=-0.5, ymax=1.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=1.5, ymin=1.5, ymax=-0.5] {patch_comparison_plot-010.png};
+
+\nextgroupplot[
+colorbar horizontal,
+colormap/viridis,
+hide x axis,
+hide y axis,
+point meta max=0.310703594362547,
+point meta min=0.00609972214401897,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=-0.5, xmax=3.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={darkgray176},
+ymin=-0.5, ymax=3.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=3.5, ymin=3.5, ymax=-0.5] {patch_comparison_plot-011.png};
+
+\nextgroupplot[
+colorbar horizontal,
+colormap/viridis,
+hide x axis,
+hide y axis,
+point meta max=1.00604400504074,
+point meta min=0.00180929616405372,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=-0.5, xmax=7.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={darkgray176},
+ymin=-0.5, ymax=7.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=7.5, ymin=7.5, ymax=-0.5] {patch_comparison_plot-012.png};
+
+\nextgroupplot[
+colorbar horizontal,
+colormap/viridis,
+hide x axis,
+hide y axis,
+point meta max=12.1145164969207,
+point meta min=0.000240311141800692,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=-0.5, xmax=15.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={darkgray176},
+ymin=-0.5, ymax=15.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=15.5, ymin=15.5, ymax=-0.5] {patch_comparison_plot-013.png};
+
+\nextgroupplot[
+colorbar horizontal,
+colormap/viridis,
+hide x axis,
+hide y axis,
+point meta max=15.115588676692,
+point meta min=-3.92921775724153e-09,
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xmin=-0.5, xmax=31.5,
+xtick style={color=black},
+y dir=reverse,
+y grid style={darkgray176},
+ymin=-0.5, ymax=31.5,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=31.5, ymin=31.5, ymax=-0.5] {patch_comparison_plot-014.png};
+\end{groupplot}
+
+\end{tikzpicture}

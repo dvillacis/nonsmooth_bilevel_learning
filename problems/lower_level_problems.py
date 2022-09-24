@@ -208,9 +208,9 @@ class LowerPatchRegLearning_2D(LowerLevelProblem):
         # p = spla.spsolve(A.tosparse(),b)[:n]
         # print(A.todense())
         # print(np.linalg.cond(A.todense()))
-        p,exitcode,itn,normr,normar,norma,conda,normx = spla.lsmr(A.tosparse(),b)
+        p,exitcode = spla.qmr(A.tosparse(),b)
         print(exitcode)
-        if exitcode == 7:
+        if exitcode >0:
             print("Warning: bad conditioned matrix using param: %s " % param)
         p = p[:n]
         Kxu = self.Kx*self.recon.ravel()

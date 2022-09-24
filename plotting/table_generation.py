@@ -10,16 +10,36 @@ def read_json(infile):
         mydict = json.load(ifile)
     return mydict
 
+def read_stats_file(stats_path):
+    keywords = ['nfev','nit','njev','n_reg_jev']
+    if not os.path.isfile(stats_path):
+            raise RuntimeError('Cannot find stats: %s' % stats_path)
+    with open(stats_path,'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if 'n_reg_jev' in line:
+                n_reg_jev = int(line.split(':')[1].strip())
+            elif 'nfev' in line:
+                n_fev = int(line.split(':')[1].strip())
+            elif 'nit' in line:
+                nit = int(line.split(':')[1].strip())
+            elif 'njev' in line:
+                njev = int(line.split(':')[1].strip())
+            else:
+                print('Skipping line...')
+        return n_reg_jev,n_fev,nit,njev
+
 def generate_patch_table(setting_files,outfolder):
-    summary_table = pd.DataFrame(columns=['patch','l2','psnr','ssim'])
+    summary_table = pd.DataFrame(columns=['patch','nit','nfev','ngev','nreggev','COST','PSNR','SSIM'])
     for index,setting_file in enumerate(setting_files):
         setting = read_json(setting_file)
         setting_file_basename = setting_file.split(os.path.sep)[-1].replace('.json', '')
         resultdir = os.path.join('raw_results',setting_file_basename)
         if not os.path.isfile(setting_file):
-            raise RuntimeError('Cannot find results folder: %s' % resultdir)
+            raise RuntimeError('Cannot find results folder: %s' % setting_file_basename)
         recons = np.load(os.path.join(resultdir,'%s_recons.npy' % (setting_file_basename)))
         true_imgs = np.load(os.path.join(resultdir,'%s_true_imgs.npy' % (setting_file_basename)))
+        n_reg_jev,n_fev,nit,njev = read_stats_file(os.path.join(resultdir,'%s_stats.txt' % (setting_file_basename))) 
         l2_recs = []
         ssim_recs = []
         psnr_recs = []
@@ -28,7 +48,7 @@ def generate_patch_table(setting_files,outfolder):
             ssim_recs.append(ssim(true_imgs[:,:,i],recons[:,:,i]))
             psnr_recs.append(psnr(true_imgs[:,:,i],recons[:,:,i]))
         # print(f'{setting_file_basename}:\nl2={np.mean(l2_recs)} psnr={np.mean(psnr_recs)} ssim={np.mean(ssim_recs)}')
-        summary_table.loc[index] = [f'{setting["problem"]["px"]}x{setting["problem"]["py"]}',np.mean(l2_recs),np.mean(psnr_recs),np.mean(ssim_recs)]
+        summary_table.loc[index] = [f'{setting["problem"]["px"]}x{setting["problem"]["py"]}',nit,n_fev,njev,n_reg_jev,np.mean(l2_recs),np.mean(psnr_recs),np.mean(ssim_recs)]
     print(summary_table)
     with open(os.path.join(outfolder,'summary_table.tex'),'w') as f:
         print(summary_table.style.to_latex(),file=f)
