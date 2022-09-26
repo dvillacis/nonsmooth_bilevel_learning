@@ -51,5 +51,6 @@ benchmarks/
 
 raw_results/2D*
 raw_results_2/
+raw_results/3param2d*
 
 output_plot/

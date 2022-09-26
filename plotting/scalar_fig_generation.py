@@ -64,8 +64,8 @@ def generate_scalar_figure(setting_file,outpath):
         axs[2].set_yticks([])
         axs[2].set_yticklabels([])
         axs[2].set_xlabel(f'PSNR={np.mean(psnr_rec):.4f}\nSSIM={np.mean(ssim_rec):.4f}')
-    plt.show()
-    # tikzplotlib.save(os.path.join(outpath,'scalar_comparison_plot.tex'))
+    # plt.show()
+    tikzplotlib.save(os.path.join(outpath,'scalar_comparison_plot.tex'))
 
 def main():
     if len(sys.argv) < 3:
