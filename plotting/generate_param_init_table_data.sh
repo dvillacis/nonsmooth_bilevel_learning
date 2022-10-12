@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+python generate_param_init_table.py ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_10.json ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_20.json ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_30.json ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_40.json ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_50.json ../problem_settings/cameraman_alpha_data_init_experiment/cameraman_scalar_data_60.json ../output_table/cameraman_alpha_data_experiment

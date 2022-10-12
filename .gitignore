@@ -54,3 +54,6 @@ raw_results_2/
 raw_results/3param2d*
 
 output_plot/
+
+problem_settings/cameraman_alpha_data_init_experiment
+problem_settings/cameraman_alpha_reg_init_experiment
